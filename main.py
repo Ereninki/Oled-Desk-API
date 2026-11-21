@@ -22,14 +22,16 @@ async def hackatime_information():
     ...
 
 @app.get("/get-the-informations")
-async def get_the_informations(api_key: str, hackatime_api: str, hackatime_id: str, timezone: str):
+async def get_the_informations(api_key: str, hackatime_api: str, timezone: str):
+    if api_key != os.getenv("API_KEY"):
+        raise HTTPException(403, detail="sorry but your api key isnt matching,, pls check it again")
     try:
         timezone_now = ZoneInfo(timezone)
     except ZoneInfoNotFoundError:
         raise HTTPException(400, detail="sorry but your timezone you inserted isnt right..... pls check it again!")
 
     headers = {"Authorization": f"Bearer {hackatime_api}"}
-    url = f"https://hackatime.hackclub.com/api/hackatime/v1/users/{hackatime_id}/statusbar/today"
+    url = f"https://hackatime.hackclub.com/api/hackatime/v1/users/0/statusbar/today"
 
     try:
         hackatime_response = requests.get(url, headers=headers)
